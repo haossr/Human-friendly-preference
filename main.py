@@ -1,10 +1,10 @@
 from exp import Exp
 import numpy as np
 import pystan
+import fire
 
-if __name__ == "__main__":
-    N = 1000
-    exp = Exp(M=10)
+def main(N=1000, M=10):
+    exp = Exp(M=M)
     data = exp.gen_data()
     gt = exp.ground_truth()
     sm = pystan.StanModel(file="stan/baseline.stan")
@@ -14,5 +14,10 @@ if __name__ == "__main__":
     Umax_ind = gt['umax_ind']
 
     correct = np.sum(Umax_ind_hat == Umax_ind)
+    print(corrent.shape)
     print(f"Out model hit the maximum [{correct} / {N}] = {correct/N:.2f}") 
 
+
+if __name__ == "__main__":
+    fire.Fire(main)
+    
