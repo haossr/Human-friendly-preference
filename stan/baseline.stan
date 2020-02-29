@@ -7,20 +7,19 @@ data {
     matrix[M, F] C_x2; // second element of the comprisons
     real sigma; 
     int C_y[M]; // outcome
-
 }
 parameters {
-    vector[F] theta; // parameter of Utility
+    vector[F] beta; // parameter of Utility
     vector[M] eta; // noise per comparison
 }
 transformed parameters {
     vector[M] Udiff;
     vector[N] U;
-    Udiff = (C_x1 - C_x2) * theta + sigma * eta;
-    U = X * theta;
+    Udiff = (C_x1 - C_x2) * beta + sigma * eta;
+    U = X * beta;
 }
 model {
-    theta ~ normal(0, 1);
+    beta ~ normal(0, 1);
     for(i in 1:M) {
         C_y[i] ~ bernoulli(Phi(Udiff[i]));
     }

@@ -1,1 +1,1 @@
-from .exp import Exp
+from .data import LinearRandomDataset
