@@ -20,7 +20,7 @@ class LinearRandomDataset:
         self.U = np.array([self._U(x) for x in self.X])
     
     def sample_full(self, M):
-        eta = np.random.rand(M)
+        eta = np.random.randn(M)
 
         C_ind = np.random.randint(self._N, size=(M, 2))
         C_x = self.X[C_ind] 
@@ -36,6 +36,23 @@ class LinearRandomDataset:
                 'C_x2': C_x[:,1,:],
                 'C_y': C_y,
                 'sigma': self._sigma}
+
+    def sample_partial(self, M, B):
+        eta = np.random.randn((M, B)) * np.sqrt(1/2)
+        C_ind = np.random.randint(self._N, size=(M, B))
+        C_X = self.X[C_ind] 
+        C_U = self._U(C_X) + eta
+        C_y = np.argmax(C_U, axis=1)
+
+        return {'N': self._N,
+                'F': self._F,
+                'M': M,
+                'B': B,
+                'X': self.X,
+                'C_X': C_X,
+                'C_y': C_y,
+                'sigma': self._sigma}
+
 
     def get_groundtruth(self):
         return {"U": self.U,

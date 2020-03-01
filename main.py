@@ -1,23 +1,23 @@
-from exp import LinearRandomDataset 
 import numpy as np
 import pystan
 import fire
 
-def main(iteration=1000, M=10):
-    exp = LinearRandomDataset()
-    
-    data = exp.sample_full(M)
-    groundtruth = exp.get_groundtruth()
-    sm = pystan.StanModel(file="stan/baseline.stan")
-    
-    fit = sm.sampling(data=data, iter=iteration, chains=4)
+from exp import LinearRandomDataset, Experiment
 
-    Umax_ind_hat = fit.extract()['U'].argmax(1)
-    Umax_ind = groundtruth['U'].argmax()
 
-    correct = np.sum(Umax_ind_hat == Umax_ind)
-    print(correct.shape)
-    print(f"Out model hit the maximum [{correct} / {N}] = {correct/N:.2f}") 
+def main(iteration=15, M=10):
+    dataset = LinearRandomDataset(sigma=0.01)
+    exp = Experiment(dataset, 
+                     stan_file_full="stan/baseline.stan", 
+                     stan_file_partial="stan/partial.stan",
+                     iteration=iteration)
+    results = exp.experiment_full()
+    print(results)
+    
+    #print(f"Top-1 Recall: Mean {top1.mean():.4f}, SD {top1.std():.4f}")
+    #print(f"Top-5 Recall: Mean {top5.mean():.4f}, SD {top5.std():.4f}")
+    #print(f"Correlation: Mean {cor.mean():.4f}, SD {cor.std():.4f}")
+    #print(f"Regret: Mean {reg.mean():.4f}, SD {reg.std():.4f}")
 
 
 if __name__ == "__main__":
