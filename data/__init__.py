@@ -1,1 +1,1 @@
-from data import LinearRandomDataset
+from .data import LinearRandomDataset
