@@ -23,7 +23,7 @@ class Experiment:
         self._iteration = iteration
 
     def experiment_full(self):
-        results = []
+        results = None 
         for m in self._M:
             comparisons = self._dataset.sample_full(m)
             fit = self._sm_full.sampling(data=comparisons,
@@ -35,11 +35,11 @@ class Experiment:
             Uhat = fit.extract()['U']
             result = all_metrics(Uhat, U)
             result['M'] = m
-            results.append(result)
-        return pd.DataFrame(results)
+            results = pd.concat([results, result])
+        return results
 
     def experiment_partial(self):
-        results = []
+        results = None 
         for m in self._M:
             result = {"M": m}
             comparisons = self._dataset.sample_partial(m, self._B)
@@ -49,23 +49,7 @@ class Experiment:
                                             sample_file="outputs/partial.out")
             U = self._groundtruth['U']
             Uhat = fit.extract()['U']
-
-            top1 = top_k_recall(Uhat, U, 1)
-            top5 = top_k_recall(Uhat, U, 5)
-            cor = correlation(Uhat, U)
-            reg = regret(Uhat, U)
-
-            result['top1_mean'] = top1.mean()
-            result['top1_sd'] = top1.std()
-            result['top5_mean'] = top5.mean()
-            result['top5_sd'] = top5.std()
-
-            result['cor_mean'] = cor.mean()
-            result['cor_sd'] = cor.std()
-            result['reg_mean'] = reg.mean()
-            result['reg_sd'] = reg.std()
-
-            result['samples'] = len(reg)
-
-            results.append(result)
-        return pd.DataFrame(results)
+            result = all_metrics(Uhat, U)
+            result['M'] = m
+            results = pd.concat([results, result])
+        return results

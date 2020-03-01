@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from scipy.stats.stats import pearsonr
 
 
@@ -15,7 +16,7 @@ def top_k_recall(yhat, y, k=5):
 
 
 def correlation(yhat, y):
-    return np.array([pearsonr(yh, y) for yh in yhat])
+    return np.array([pearsonr(yh, y)[0] for yh in yhat]).reshape(-1)
 
 
 def regret(yhat, y):
@@ -26,22 +27,14 @@ def regret(yhat, y):
 
 
 def all_metrics(Uhat, U):
-    result = {}
-    top1 = top_k_recall(Uhat, U, 1)
-    top5 = top_k_recall(Uhat, U, 5)
-    cor = correlation(Uhat, U)
-    reg = regret(Uhat, U)
+    #top1 = top_k_recall(Uhat, U, 1)
+    #top5 = top_k_recall(Uhat, U, 5)
+    #cor = correlation(Uhat, U)
+    #reg = regret(Uhat, U)
+    #print(top1.shape, top5.shape, cor.shape, reg.shape)
+    return pd.DataFrame({
+        "top1": top_k_recall(Uhat, U, 1),
+        "top5": top_k_recall(Uhat, U, 5),
+        "correlation": correlation(Uhat, U),
+        "regret": regret(Uhat, U)})
 
-    result['top1_mean'] = top1.mean()
-    result['top1_sd'] = top1.std()
-    result['top5_mean'] = top5.mean()
-    result['top5_sd'] = top5.std()
-
-    result['cor_mean'] = cor.mean()
-    result['cor_sd'] = cor.std()
-    result['reg_mean'] = reg.mean()
-    result['reg_sd'] = reg.std()
-
-    result['sample_size'] = Uhat.shape[0]
-
-    return result
