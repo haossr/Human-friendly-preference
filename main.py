@@ -16,14 +16,11 @@ def main(iteration=1000, M=10):
                      iteration=iteration)
     results_partial = exp.experiment_partial()
     results_full = exp.experiment_full()
+    results_partial.to_csv("outputs/partial.csv")
+    results_full.to_csv("outputs/full.csv")
     print(results_partial)
     print(results_full)
     
-    #print(f"Top-1 Recall: Mean {top1.mean():.4f}, SD {top1.std():.4f}")
-    #print(f"Top-5 Recall: Mean {top5.mean():.4f}, SD {top5.std():.4f}")
-    #print(f"Correlation: Mean {cor.mean():.4f}, SD {cor.std():.4f}")
-    #print(f"Regret: Mean {reg.mean():.4f}, SD {reg.std():.4f}")
-
 
 if __name__ == "__main__":
     fire.Fire(main)
