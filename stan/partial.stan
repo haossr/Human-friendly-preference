@@ -5,43 +5,40 @@ data {
     int<lower=0> M; // number of comparsions
 
     matrix[N, F] X; // all samples
-    matrix[M, B, F] C; // Comparisons  
-    
-    matrix[M] D_l; // first comparison dimension
-    matrix[M] D_k; // second comparison dimension    
+    real C[M, B, 2, F]; // Comparisons  
+    int D[M, 2]; // comparison dimension
 
     real sigma; 
-    int C_y[M*(B-1)]; // outcome
+    int C_y[M, B]; // outcome
 }
 
 parameters {
     vector[F] beta; // parameter of Utility
-    vector[M, B-1] eta; // noise per comparison
+    real eta[M, B]; // noise per comparison
 }
 
 transformed parameters {
-    vector[M, B-1] Udiff;
+    matrix[M, B] dU;
     vector[N] U;
-    int d_l;
-    int d_k; 
     
     for(i in 1:M) {
-        d_l = D_l[i]
-        d_k = D_k[i]
-        x_best = C[i, y[i]] 
-        for(j in 1:(B-1)) {
-            if (j != y[i]) {
-                x_other = C[i, j]
-                Udiff[i, j] = (x_best[d_l] - x_other[d_l]) * beta[d_l] + (x_best[d_k] - x_other[d_k]) * beta[d_k] + sigma * eta;
-            }
+        for(j in 1:B) {
+            dU[i, j] = (C[i,j,1,D[i,1]] - C[i,j,2,D[i,1]]) * beta[D[i,1]] + (C[i,j,1,D[i,2]] - C[i,j,2,D[i,2]]) * beta[D[i,2]] + sigma * eta[i,j];
         }
-
+    }
     U = X * beta;
 }
 
 model {
-    beta ~ normal(0, 1);
-    for(i in 1:M) {
-        C_y[i] ~ bernoulli(Phi(Udiff[i]));
+    for (i in 1:M) {
+        for (j in 1:B) {
+            eta[i][j] ~ normal(0, 1);
+        }   
+    }
+    beta ~ normal(0, 1); 
+    for (i in 1:M) {
+        for (j in 1:B) {
+            C_y[i][j] ~ bernoulli(Phi_approx(dU[i][j]));
+        }   
     }
 }

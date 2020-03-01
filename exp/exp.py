@@ -7,14 +7,14 @@ from eval import top_k_recall, correlation, regret, all_metrics
 class Experiment:
     def __init__(self, dataset, 
                  stan_file_full, 
-                 #stan_file_partial, 
+                 stan_file_partial, 
                  M=None, 
                  B=50, 
                  iteration=200,
                  **kwargs):
         self._dataset = dataset
         self._sm_full = pystan.StanModel(file=stan_file_full)
-        #self._sm_partial = pystan.StanModel(file=stan_file_partial)
+        self._sm_partial = pystan.StanModel(file=stan_file_partial)
         self._groundtruth = self._dataset.get_groundtruth()
         if M is None:
             M = [2, 5, 10, 20, 40, 100, 200, 400, 1000] 
@@ -27,6 +27,7 @@ class Experiment:
         for m in self._M:
             comparisons = self._dataset.sample_full(m)
             fit = self._sm_full.sampling(data=comparisons, 
+                              #init='0',
                               iter=self._iteration, 
                               pars=['U'], 
                               sample_file="outputs/baseline.out")

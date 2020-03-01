@@ -13,14 +13,13 @@ parameters {
     vector[M] eta; // noise per comparison
 }
 transformed parameters {
-    vector[M] Udiff;
+    vector[M] dU;
     vector[N] U;
-    Udiff = (C_x1 - C_x2) * beta + sigma * eta;
+    dU = (C_x1 - C_x2) * beta + sigma * eta;
     U = X * beta;
 }
 model {
+    eta ~ normal(0, 1);
     beta ~ normal(0, 1);
-    for(i in 1:M) {
-        C_y[i] ~ bernoulli(Phi(Udiff[i]));
-    }
+    C_y ~ bernoulli(Phi_approx(dU));
 }
