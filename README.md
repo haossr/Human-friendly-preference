@@ -21,7 +21,10 @@ python main.py plot
 ```
 
 ### Examples (Random Experiments)
-
+![Top 1](outputs/top1.png)
+![Top 5](outputs/top5.png)
+![Regret](outputs/regret.png)
+![Correlation](outputs/top1.png)
 
 ## Project implementation structure 
 ```
