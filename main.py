@@ -38,6 +38,7 @@ def simulate(iteration=100,
 #     print(results_full)
 
 def plot():
+    sb.set()
     full = pd.read_csv("outputs/full.csv")
     partial = pd.read_csv("outputs/partial.csv")
     for metric in ['top1', 'top5', 'correlation', 'regret']:

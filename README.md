@@ -24,7 +24,7 @@ python main.py plot
 ![Top 1](outputs/top1.png)
 ![Top 5](outputs/top5.png)
 ![Regret](outputs/regret.png)
-![Correlation](outputs/top1.png)
+![Correlation](outputs/correlation.png)
 
 ## Project implementation structure 
 ```
