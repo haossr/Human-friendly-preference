@@ -12,7 +12,7 @@
 ### Simulation 
 ```
 # Simulation with random dataset and a linear utility function
-python main.py --iteration 1000 --M [1,2,5,10,20,50,100,150,200] --B 20
+python main.py simulate --iteration 1000 --M [1,2,5,10,20,50,100,150,200] --B 20
 # Result is saved to outputs/
 ```
 ### Visualization
