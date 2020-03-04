@@ -10,10 +10,11 @@ from exp import Experiment
 
 
 # iteration 250, sigma 0.01, 1-100
-def simulate(iteration=100, 
+def simulate(
          N=100,
          M=None,
          F=8,
+         R=1000,
          B=100,
          sigma=0.01):
     if M is None:
@@ -26,12 +27,12 @@ def simulate(iteration=100,
                      stan_file_full="stan/baseline.stan",
                      stan_file_partial="stan/partial.stan",
                      M=M,
-                     B=B,
-                     iteration=iteration)
-    results_partial = exp.experiment_partial()
+                     R=R,
+                     B=B)
     results_full = exp.experiment_full()
-    results_partial.to_csv("outputs/partial.csv", index=None)
+    results_partial = exp.experiment_partial()
     results_full.to_csv("outputs/full.csv", index=None)
+    results_partial.to_csv("outputs/partial.csv", index=None)
 #     print("===========\tResult of the [Partial Comparisons]\t==========")
 #     print(results_partial)
 #     print("===========\tResult of the [Full Comparisons]\t==========")
